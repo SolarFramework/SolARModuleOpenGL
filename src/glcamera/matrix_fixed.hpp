@@ -3,7 +3,7 @@
 
 #include "common.hpp"
 #include "vector.hpp"
-#include <string.h>
+#include <cstring>
 #include <iostream>
 
 namespace math {
@@ -11,18 +11,18 @@ namespace math {
 	struct matrix_fixed;
 }
 
-typedef math::matrix_fixed<double,2,2>	math_matrix_2x2d;
-typedef math::matrix_fixed<double,3,3>	math_matrix_3x3d;
-typedef math::matrix_fixed<double,3,2>	math_matrix_3x2d;
-typedef math::matrix_fixed<double,3,4>	math_matrix_3x4d;
-typedef	math::matrix_fixed<double,4,3>	math_matrix_4x3d;
-typedef	math::matrix_fixed<double,4,4>	math_matrix_4x4d;
+using math_matrix_2x2d = math::matrix_fixed<double,2,2>;
+using math_matrix_3x3d = math::matrix_fixed<double,3,3>;
+using math_matrix_3x2d = math::matrix_fixed<double,3,2>;
+using math_matrix_3x4d = math::matrix_fixed<double,3,4>;
+using math_matrix_4x3d = math::matrix_fixed<double,4,3>;
+using math_matrix_4x4d = math::matrix_fixed<double,4,4>;
 
-typedef math::matrix_fixed<float,2,2>		math_matrix_2x2f;
-typedef math::matrix_fixed<float,3,3>		math_matrix_3x3f;
-typedef math::matrix_fixed<float,3,4>		math_matrix_3x4f;
-typedef math::matrix_fixed<float,4,3> 	math_matrix_4x3f;
-typedef math::matrix_fixed<float,4,4> 	math_matrix_4x4f;
+using math_matrix_2x2f = math::matrix_fixed<float,2,2>;
+using math_matrix_3x3f = math::matrix_fixed<float,3,3>;
+using math_matrix_3x4f = math::matrix_fixed<float,3,4>;
+using math_matrix_4x3f = math::matrix_fixed<float,4,3>;
+using math_matrix_4x4f = math::matrix_fixed<float,4,4>;
 
 namespace math {
 

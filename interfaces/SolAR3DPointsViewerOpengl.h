@@ -48,10 +48,10 @@ class SOLAROPENGL_EXPORT_API SolAR3DPointsViewerOpengl : public org::bcom::xpcf:
 {
 public:
     SolAR3DPointsViewerOpengl();
-    ~SolAR3DPointsViewerOpengl();
+    ~SolAR3DPointsViewerOpengl() override;
 
-    org::bcom::xpcf::XPCFErrorCode onConfigured() override final;
-    void unloadComponent () override final;
+    org::bcom::xpcf::XPCFErrorCode onConfigured() final;
+    void unloadComponent () final;
 
     /// @brief Display in a windows the 3D point cloud as well as the current camera, and optionnally, the previous frames and keyframes.
     /// @param[in] points, Set of 3D points to display in the 3D viewer.
@@ -98,7 +98,7 @@ private:
     std::vector<unsigned int> m_cameraColor = {0,0,255};
 
     /// @brief if not null, each keyframe pose is drawn as a camera, else as a point
-    unsigned int m_keyframeAsCamera;
+    unsigned int m_keyframeAsCamera{};
 
     /// @brief frame color
     std::vector<unsigned int> m_framesColor = {180,180,180};
@@ -144,9 +144,9 @@ private:
     std::vector<Transform3Df> m_framePoses;
     gl_camera m_glcamera;
     Point3Df m_sceneCenter;
-    float m_sceneSize;
-    unsigned int m_resolutionX;
-    unsigned int m_resolutionY;
+    float m_sceneSize{};
+    unsigned int m_resolutionX{};
+    unsigned int m_resolutionY{};
     bool m_exitKeyPressed = false;
     bool m_firstDisplay = true;
 

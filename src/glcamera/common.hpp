@@ -1,7 +1,7 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
-#include <assert.h>
+#include <cassert>
 #include <cmath>
 
 // various constants
@@ -19,18 +19,18 @@
 
 #define NOT_NULL					1
 
-typedef unsigned long		DWORD;
-typedef signed long			LONG;
-typedef unsigned long		ULONG;
-typedef unsigned short		WORD;
-typedef signed short		SHORT;
-typedef signed int			INT;
-typedef unsigned int		UINT;
+using DWORD = unsigned long;
+using LONG = long;
+using ULONG = unsigned long;
+using WORD = unsigned short;
+using SHORT = short;
+using INT = int;
+using UINT = unsigned int;
 //typedef unsigned char		CHAR;
-typedef unsigned char		BYTE;
-typedef int					BOOL;
-typedef float				FLOAT;
-typedef double				DOUBLE;
+using BYTE = unsigned char;
+using BOOL = int;
+using FLOAT = float;
+using DOUBLE = double;
 
 #define KB(x) ((x)*1024)
 #define MB(x) ((x)*1024*1024)

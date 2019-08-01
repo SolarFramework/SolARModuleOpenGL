@@ -31,12 +31,12 @@ public:
 
 	}
 
-	rigid_motion(const math::vector_fixed<T,3> & _t) {
+	explicit rigid_motion(const math::vector_fixed<T,3> & _t) {
 		m_rotation.set_identity();
 		m_translation = _t;
 	}
 
-	rigid_motion(const math::matrix_fixed<T,3,3> & _rot) {
+	explicit rigid_motion(const math::matrix_fixed<T,3,3> & _rot) {
 		m_rotation = _rot;
 		m_translation.fill(T(0));
 	}

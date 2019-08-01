@@ -2,7 +2,7 @@
 #define _GLCAMERA_H
 
 #ifdef _WIN32
-#include <windows.h>
+#include <Windows.h>
 //#include <gl/gl.h>
 //#include <glext.h>
 //#include <wglext.h>
@@ -20,20 +20,20 @@ namespace Mouse {
 
 class gl_camera {
 private:
-	int lastmousex, lastmousey;
-	Mouse::button lastb;
+	int lastmousex{}, lastmousey{};
+	Mouse::button lastb{Mouse::NONE};
 
 	math_vector_3f lightdir;    // light direction
 
-	int viewx, viewy, vieww, viewh;
+	int viewx{}, viewy{}, vieww{}, viewh{};
 
 	rigid_motion<float> m_camera_rm;
 	math_vector_3f m_scene_center;
-	float m_scene_size;
+	float m_scene_size{};
 
 	math_vector_3f spincenter;	// center for spinning
 
-	float field_of_view;
+	float field_of_view{45.0f};
 
 	math_vector_3f mouse2tb(float x, float y); // convert mouse to trackball position
 
@@ -44,8 +44,7 @@ private:
 
 public:
 
-	gl_camera() :lastb(Mouse::NONE), lightdir(math_vector_3f(0.0f,0.0f,1.0f)),
-			 field_of_view(45.0f)
+    gl_camera() : lightdir(math_vector_3f(0.0f,0.0f,1.0f))
 	{
 		lightdir[0] = lightdir[1] = 0; lightdir[2] = 1;
 	}

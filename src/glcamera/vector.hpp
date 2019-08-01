@@ -5,7 +5,7 @@
 
 #include <iostream>
 #include "vector_fixed.hpp"
-#include <math.h>
+#include <cmath>
 
 
 namespace math {
@@ -23,7 +23,7 @@ struct vector{
 		v = new T[m_size];
 	}
 
-	vector(int size) {
+	explicit vector(int size) {
 		m_size = size;
 		v = new T[m_size];
 	}

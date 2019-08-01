@@ -44,7 +44,7 @@ class SOLAROPENGL_EXPORT_API SinkPoseTextureBuffer : public org::bcom::xpcf::Con
 {
 public:
     SinkPoseTextureBuffer();
-    ~SinkPoseTextureBuffer() = default;
+    ~SinkPoseTextureBuffer() override = default;
 
     /// @brief Set a new image and pose coming from the pipeline.
     /// @param[in] pose The new pose to be made available to a third party application.
@@ -74,12 +74,12 @@ public:
     /// @return return FrameworkReturnCode::_SUCCESS if a new pose and image are available, otherwise frameworkReturnCode::_ERROR.
     SinkReturnCode tryUpdate( Transform3Df& pose) override;
 
-    void unloadComponent () override final;
+    void unloadComponent () final;
 
 private:
     SRef<Image> m_image;
     Transform3Df m_pose;
-    GLuint m_textureHandle;
+    GLuint m_textureHandle{};
     size_t m_textureBufferSize;
 
     bool m_newPose;

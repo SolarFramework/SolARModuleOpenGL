@@ -17,7 +17,7 @@
 #include "SolAR3DPointsViewerOpengl.h"
 #include "core/Log.h"
 #include <map>
-#include <math.h>
+#include <cmath>
 #include <random>
 
 namespace xpcf = org::bcom::xpcf;
@@ -36,7 +36,7 @@ static Transform3Df SolAR2GL = [] {
   return Transform3Df(matrix);
 }();
 
-SolAR3DPointsViewerOpengl * SolAR3DPointsViewerOpengl::m_instance = NULL ;
+SolAR3DPointsViewerOpengl * SolAR3DPointsViewerOpengl::m_instance = nullptr ;
 
 SolAR3DPointsViewerOpengl::SolAR3DPointsViewerOpengl():ConfigurableBase(xpcf::toUUID<SolAR3DPointsViewerOpengl>())
 {
@@ -285,13 +285,13 @@ void SolAR3DPointsViewerOpengl::OnRender()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_CULL_FACE);
 
-    if (m_drawWorldAxis)
+    if (m_drawWorldAxis != 0u)
     {
         Transform3Df identity = Transform3Df::Identity();
         drawAxis(identity, m_sceneSize * 0.1 * m_axisScale, m_axisScale);
     }
 
-    if (m_drawSceneAxis)
+    if (m_drawSceneAxis != 0u)
     {
         Transform3Df sceneTransform = Transform3Df::Identity();
         sceneTransform(0,3)= m_sceneCenter[0];
@@ -307,13 +307,13 @@ void SolAR3DPointsViewerOpengl::OnRender()
         glEnable (GL_POINT_SMOOTH);
         glPointSize(m_pointSize);
         glBegin(GL_POINTS);
-        for (unsigned int i = 0; i < m_points.size(); ++i) {
-         if (m_fixedPointsColor)
+        for (auto & m_point : m_points) {
+         if (m_fixedPointsColor != 0u)
             glColor3f(m_pointsColor[0], m_pointsColor[1], m_pointsColor[2]);
          else
-             glColor3f(m_points[i].getR(), m_points[i].getG(), m_points[i].getB());
+             glColor3f(m_point.getR(), m_point.getG(), m_point.getB());
 
-         glVertex3f(m_points[i].getX(), -m_points[i].getY(), -m_points[i].getZ());
+         glVertex3f(m_point.getX(), -m_point.getY(), -m_point.getZ());
         }
         glEnd();
         glPopMatrix();
@@ -325,38 +325,38 @@ void SolAR3DPointsViewerOpengl::OnRender()
         glEnable (GL_POINT_SMOOTH);
         glPointSize(m_pointSize);
         glBegin(GL_POINTS);
-        for (unsigned int i = 0; i < m_points2.size(); ++i) {
-         if (m_fixedPointsColor)
+        for (auto & i : m_points2) {
+         if (m_fixedPointsColor != 0u)
             glColor3f(m_points2Color[0], m_points2Color[1], m_points2Color[2]);
          else
-             glColor3f(m_points2[i].getR(), m_points2[i].getG(), m_points2[i].getB());
+             glColor3f(i.getR(), i.getG(), i.getB());
 
-         glVertex3f(m_points2[i].getX(), -m_points2[i].getY(), -m_points2[i].getZ());
+         glVertex3f(i.getX(), -i.getY(), -i.getZ());
         }
         glEnd();
         glPopMatrix();
     }
 
-    // draw  camera pose !    
+    // draw  camera pose !
     std::vector<Vector4f> cameraPyramid;
     drawFrustumCamera(m_cameraPose, m_cameraColor, 0.033f * m_cameraScale * m_sceneSize, 0.003f * m_cameraScale * m_sceneSize, true);
 
-    if (m_drawCameraAxis)
+    if (m_drawCameraAxis != 0u)
         drawAxis(m_cameraPose, m_sceneSize * 0.1 * m_axisScale, m_axisScale);
 
     // Draw keyframe poses
     if (!m_keyframePoses.empty())
     {
         glPushMatrix();
-        if (m_keyframeAsCamera)
+        if (m_keyframeAsCamera != 0u)
         {
-            for (unsigned int i = 0; i < m_keyframePoses.size(); ++i)
-                drawFrustumCamera(m_keyframePoses[i],m_keyframesColor, 0.013f * m_cameraScale * m_sceneSize,0.003f * m_cameraScale * m_sceneSize,false);
+            for (auto & m_keyframePose : m_keyframePoses)
+                drawFrustumCamera(m_keyframePose,m_keyframesColor, 0.013f * m_cameraScale * m_sceneSize,0.003f * m_cameraScale * m_sceneSize,false);
         }
         else
         {
-            for (unsigned int i = 0; i < m_keyframePoses.size(); ++i)
-                drawSphereCamera(m_keyframePoses[i], m_keyframesColor, 0.005f * m_cameraScale * m_sceneSize);
+            for (auto & m_keyframePose : m_keyframePoses)
+                drawSphereCamera(m_keyframePose, m_keyframesColor, 0.005f * m_cameraScale * m_sceneSize);
         }
         glPopMatrix();
     }
@@ -365,15 +365,15 @@ void SolAR3DPointsViewerOpengl::OnRender()
     if (!m_keyframePoses2.empty())
     {
         glPushMatrix();
-        if (m_keyframeAsCamera)
+        if (m_keyframeAsCamera != 0u)
         {
-            for (unsigned int i = 0; i < m_keyframePoses2.size(); ++i)
-                drawFrustumCamera(m_keyframePoses2[i],m_keyframes2Color, 0.013f * m_cameraScale * m_sceneSize,0.003f * m_cameraScale * m_sceneSize,false);
+            for (auto & i : m_keyframePoses2)
+                drawFrustumCamera(i,m_keyframes2Color, 0.013f * m_cameraScale * m_sceneSize,0.003f * m_cameraScale * m_sceneSize,false);
         }
         else
         {
-            for (unsigned int i = 0; i < m_keyframePoses2.size(); ++i)
-                drawSphereCamera(m_keyframePoses2[i], m_keyframes2Color, 0.005f * m_cameraScale * m_sceneSize);
+            for (auto & i : m_keyframePoses2)
+                drawSphereCamera(i, m_keyframes2Color, 0.005f * m_cameraScale * m_sceneSize);
         }
         glPopMatrix();
     }
@@ -382,8 +382,8 @@ void SolAR3DPointsViewerOpengl::OnRender()
     if (!m_framePoses.empty())
     {
         glPushMatrix();
-        for (unsigned int i = 0; i < m_framePoses.size(); ++i)
-            drawSphereCamera(m_framePoses[i], m_framesColor, 0.003f * m_cameraScale * m_sceneSize);
+        for (auto & m_framePose : m_framePoses)
+            drawSphereCamera(m_framePose, m_framesColor, 0.003f * m_cameraScale * m_sceneSize);
         glPopMatrix();
     }
 

@@ -10,50 +10,50 @@ namespace math {
 	struct vector_fixed;
 }
 
-typedef math::vector_fixed<double,1> 		Vector1;
-typedef math::vector_fixed<double,2> 		Vector2;
-typedef math::vector_fixed<double,3> 		Vector3;
-typedef math::vector_fixed<double,4> 		Vector4;
+using Vector1 = math::vector_fixed<double,1>;
+using Vector2 = math::vector_fixed<double,2>;
+using Vector3 = math::vector_fixed<double,3>;
+using Vector4 = math::vector_fixed<double,4>;
 
-typedef math::vector_fixed<float,1>		Vector1f;
-typedef math::vector_fixed<float,2>		Vector2f;
-typedef math::vector_fixed<float,3>		Vector3f;
-typedef math::vector_fixed<float,4>		Vector4f;
+using Vector1f = math::vector_fixed<float,1>;
+using Vector2f = math::vector_fixed<float,2>;
+using Vector3f = math::vector_fixed<float,3>;
+using Vector4f = math::vector_fixed<float,4>;
 
-typedef math::vector_fixed<double,1>		Vector1d;
-typedef math::vector_fixed<double,2>		Vector2d;
-typedef math::vector_fixed<double,3>		Vector3d;
-typedef math::vector_fixed<double,4>		Vector4d;
+using Vector1d = math::vector_fixed<double,1>;
+using Vector2d = math::vector_fixed<double,2>;
+using Vector3d = math::vector_fixed<double,3>;
+using Vector4d = math::vector_fixed<double,4>;
 
-typedef math::vector_fixed<BYTE,1>		Vector1b;
-typedef math::vector_fixed<BYTE,2>		Vector2b;
-typedef math::vector_fixed<BYTE,3>		Vector3b;
-typedef math::vector_fixed<BYTE,4>		Vector4b;
+using Vector1b = math::vector_fixed<BYTE,1>;
+using Vector2b = math::vector_fixed<BYTE,2>;
+using Vector3b = math::vector_fixed<BYTE,3>;
+using Vector4b = math::vector_fixed<BYTE,4>;
 
-typedef math::vector_fixed<int,1>		Vector1i;
-typedef math::vector_fixed<int,2>		Vector2i;
-typedef math::vector_fixed<int,3>		Vector3i;
-typedef math::vector_fixed<int,4>		Vector4i;
+using Vector1i = math::vector_fixed<int,1>;
+using Vector2i = math::vector_fixed<int,2>;
+using Vector3i = math::vector_fixed<int,3>;
+using Vector4i = math::vector_fixed<int,4>;
 
-typedef math::vector_fixed<double,1> math_vector_1d;
-typedef math::vector_fixed<double,2> math_vector_2d;
-typedef math::vector_fixed<double,3> math_vector_3d;
-typedef math::vector_fixed<double,4> math_vector_4d;
+using math_vector_1d = math::vector_fixed<double,1>;
+using math_vector_2d = math::vector_fixed<double,2>;
+using math_vector_3d = math::vector_fixed<double,3>;
+using math_vector_4d = math::vector_fixed<double,4>;
 
-typedef math::vector_fixed<float,1> math_vector_1f;
-typedef math::vector_fixed<float,2> math_vector_2f;
-typedef math::vector_fixed<float,3> math_vector_3f;
-typedef math::vector_fixed<float,4> math_vector_4f;
+using math_vector_1f = math::vector_fixed<float,1>;
+using math_vector_2f = math::vector_fixed<float,2>;
+using math_vector_3f = math::vector_fixed<float,3>;
+using math_vector_4f = math::vector_fixed<float,4>;
 
-typedef math::vector_fixed<int,1> math_vector_1i;
-typedef math::vector_fixed<int,2> math_vector_2i;
-typedef math::vector_fixed<int,3> math_vector_3i;
-typedef math::vector_fixed<int,4> math_vector_4i;
+using math_vector_1i = math::vector_fixed<int,1>;
+using math_vector_2i = math::vector_fixed<int,2>;
+using math_vector_3i = math::vector_fixed<int,3>;
+using math_vector_4i = math::vector_fixed<int,4>;
 
-typedef math::vector_fixed<BYTE,1> math_vector_1b;
-typedef math::vector_fixed<BYTE,2> math_vector_2b;
-typedef math::vector_fixed<BYTE,3> math_vector_3b;
-typedef math::vector_fixed<BYTE,4> math_vector_4b;
+using math_vector_1b = math::vector_fixed<BYTE,1>;
+using math_vector_2b = math::vector_fixed<BYTE,2>;
+using math_vector_3b = math::vector_fixed<BYTE,3>;
+using math_vector_4b = math::vector_fixed<BYTE,4>;
 
 
 namespace math {
@@ -66,7 +66,7 @@ struct vector_fixed{
 	const T * data_block() const { return v; }
 	T * data_block() { return v; }
 
-	vector_fixed() {}
+	vector_fixed() = default;
 
 	vector_fixed(T v0, T v1) {
 		v[0]=v0;
@@ -86,7 +86,7 @@ struct vector_fixed{
 			v[3]=v3;
 	}
 
-	vector_fixed(T * data) {
+	explicit vector_fixed(T * data) {
 			copy_in(data);
 	}
 
