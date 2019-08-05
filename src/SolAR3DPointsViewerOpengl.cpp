@@ -124,11 +124,11 @@ FrameworkReturnCode SolAR3DPointsViewerOpengl::display (const std::vector<CloudP
 
         for (int i = 0; i < m_points.size(); i++)
         {
-            if (points[i].getX() > maxPoint(0)) maxPoint(0)=points[i].getX();
-            if (points[i].getZ() > maxPoint(2)) maxPoint(2)=points[i].getZ();
-            if (points[i].getX() < minPoint(0)) minPoint(0)=points[i].getX();
-            if (points[i].getY() < minPoint(1)) minPoint(1)=points[i].getY();
-            if (points[i].getZ() < minPoint(2)) minPoint(2)=points[i].getZ();
+            if (points[i].x() > maxPoint(0)) maxPoint(0)=points[i].x();
+            if (points[i].z() > maxPoint(2)) maxPoint(2)=points[i].z();
+            if (points[i].x() < minPoint(0)) minPoint(0)=points[i].x();
+            if (points[i].y() < minPoint(1)) minPoint(1)=points[i].y();
+            if (points[i].z() < minPoint(2)) minPoint(2)=points[i].z();
         }
         Vector3f sceneDiagonal;
 
@@ -150,7 +150,7 @@ FrameworkReturnCode SolAR3DPointsViewerOpengl::display (const std::vector<CloudP
         m_sceneSize = sceneDiagonal.norm();
 
         // Set the camera according to the center and the size of the scene.
-        m_glcamera.resetview(math_vector_3f(m_sceneCenter.getX(), m_sceneCenter.getY(), m_sceneCenter.getY()), m_sceneSize);
+        m_glcamera.resetview(math_vector_3f(m_sceneCenter.x(), m_sceneCenter.y(), m_sceneCenter.y()), m_sceneSize);
 
         m_firstDisplay = false;
     }
@@ -172,16 +172,18 @@ void drawFrustumCamera(Transform3Df& pose,
                        bool displayCorner){
 
     // draw  camera pose !
-    std::vector<Vector4f> cameraPyramid;
     Transform3Df glpose = SolAR2GL * pose;
-    cameraPyramid.push_back(glpose * Vector4f(scale, scale, 2.0f*scale, 1.0f));
-    cameraPyramid.push_back(glpose * Vector4f(-scale, scale, 2.0f*scale, 1.0f));
-    cameraPyramid.push_back(glpose * Vector4f(-scale, -scale, 2.0f*scale, 1.0f));
-    cameraPyramid.push_back(glpose * Vector4f(scale, -scale, 2.0f*scale, 1.0f));
-    cameraPyramid.push_back(glpose * Vector4f(0, 0, 0, 1.0f));
-    cameraPyramid.push_back(glpose * Vector4f(3.0f * scale, 0, 0, 1.0f));
-    cameraPyramid.push_back(glpose * Vector4f(0, 3.0f * scale, 0, 1.0f));
-    cameraPyramid.push_back(glpose * Vector4f(0, 0, 3.0f * scale, 1.0f));
+    std::vector<Vector4f> cameraPyramid =
+    {
+        {glpose * Vector4f(scale, scale, 2.0f*scale, 1.0f)},
+        {glpose * Vector4f(-scale, scale, 2.0f*scale, 1.0f)},
+        {glpose * Vector4f(-scale, -scale, 2.0f*scale, 1.0f)},
+        {glpose * Vector4f(scale, -scale, 2.0f*scale, 1.0f)},
+        {glpose * Vector4f(0, 0, 0, 1.0f)},
+        {glpose * Vector4f(3.0f * scale, 0, 0, 1.0f)},
+        {glpose * Vector4f(0, 3.0f * scale, 0, 1.0f)},
+        {glpose * Vector4f(0, 0, 3.0f * scale, 1.0f)},
+    };
 
     glColor3f(color[0], color[1], color[2]);
     if (displayCorner)
@@ -313,7 +315,7 @@ void SolAR3DPointsViewerOpengl::OnRender()
          else
              glColor3f(m_point.getR(), m_point.getG(), m_point.getB());
 
-         glVertex3f(m_point.getX(), -m_point.getY(), -m_point.getZ());
+         glVertex3f(m_point.x(), -m_point.y(), -m_point.z());
         }
         glEnd();
         glPopMatrix();
@@ -331,7 +333,7 @@ void SolAR3DPointsViewerOpengl::OnRender()
          else
              glColor3f(i.getR(), i.getG(), i.getB());
 
-         glVertex3f(i.getX(), -i.getY(), -i.getZ());
+         glVertex3f(i.x(), -i.y(), -i.z());
         }
         glEnd();
         glPopMatrix();
