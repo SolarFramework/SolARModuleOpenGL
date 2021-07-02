@@ -15,7 +15,7 @@ Manages OpenGL camera and trackball/arcball interaction
 using namespace std;
 
 #define DOF 10.0f
-#define MAXDOF 10000.0f
+#define MAXDOF 100000.0f
 #define TRACKBALL_R 0.8f
 #define WHEEL_MOVE 0.2f
 
@@ -248,7 +248,7 @@ void gl_camera::setup(const math_vector_3f &scene_center, float scene_size) cons
 	math_vector_3f center = m_camera_rm * scene_center;
 
 	float fardist  = -(center[2] - 8*scene_size);//max( -(center[2] - scene_size), scene_size / DOF);
-	float neardist = std::max( -(center[2] + scene_size), scene_size / MAXDOF);
+    float neardist = std::max( -(center[2] + scene_size), scene_size) / MAXDOF;
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
