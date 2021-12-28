@@ -2,12 +2,14 @@
 QT       -= core gui
 CONFIG -= qt
 
+QMAKE_PROJECT_DEPTH = 0
+
 ## global defintions : target lib name, version
 INSTALLSUBDIR = SolARBuild
 TARGET = SolARModuleOpenGL
 
 FRAMEWORK = $$TARGET
-VERSION=0.9.1
+VERSION=0.10.0
 
 DEFINES += MYVERSION=$${VERSION}
 DEFINES += TEMPLATE_LIBRARY
@@ -47,8 +49,11 @@ unix:!android {
 }
 
 linux {
+    QMAKE_LFLAGS += -ldl
+    LIBS += -L/home/linuxbrew/.linuxbrew/lib # temporary fix caused by grpc with -lre2 ... without -L in grpc.pc
     LIBS += -lGLU -lGL
 }
+
 macx {
     DEFINES += _MACOS_TARGET_
     QMAKE_MAC_SDK= macosx
@@ -60,7 +65,7 @@ macx {
 
 win32 {
 
-    DEFINES += WIN64 UNICODE _UNICODE
+    DEFINES += WIN64 UNICODE _UNICODE NOMINMAX
     QMAKE_COMPILER_DEFINES += _WIN64
     QMAKE_CXXFLAGS += -wd4250 -wd4251 -wd4244 -wd4275
     QMAKE_CXXFLAGS_RELEASE += /O2
@@ -79,6 +84,7 @@ INSTALLS += xpcf_xml_files
 OTHER_FILES += \
     packagedependencies.txt \
     packagedependencies-linux.txt \
+    packagedependencies-mac.txt \
     packagedependencies-win.txt
 
 #NOTE : Must be placed at the end of the .pro
