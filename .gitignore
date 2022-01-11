@@ -89,3 +89,4 @@ tests/build*
 *.TMP
 *.tmp
 .git Merge
+tests/run.sh
