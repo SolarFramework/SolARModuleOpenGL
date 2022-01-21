@@ -1,4 +1,4 @@
 freeglut|3.0.0|freeglut|thirdParties@github|https://github.com/SolarFramework/binaries/releases/download
-libglu1-mesa-dev||libglu|apt-get@system|apt-get
+libglu1-mesa-dev|9.0.0|glu|apt-get@system|apt-get
 
 
