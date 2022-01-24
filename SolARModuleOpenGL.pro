@@ -56,7 +56,6 @@ unix:!android {
 linux {
     QMAKE_LFLAGS += -ldl
     LIBS += -L/home/linuxbrew/.linuxbrew/lib # temporary fix caused by grpc with -lre2 ... without -L in grpc.pc
-    LIBS += -lGLU -lGL
 }
 
 macx {
