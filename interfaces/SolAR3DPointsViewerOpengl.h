@@ -172,6 +172,15 @@ private:
 
     /// @brief points color for the second cloud
     std::vector<unsigned int> m_points2Color = {255, 0, 0};
+	
+	/// @brief display points color according to class label 
+	unsigned int m_pointsColorFromClassLabel = 0;
+	
+	/// @brief colormap file mapping class label to RGB color 
+	std::string m_classLabelColorMapPath = "";
+	
+	/// @brief colormap mapping class label to RGB triples
+	std::vector<Vector3f> m_colorMap;
 
     /// @brief camera color
     std::vector<unsigned int> m_cameraColor = {0,0,255};

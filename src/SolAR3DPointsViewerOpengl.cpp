@@ -47,6 +47,8 @@ SolAR3DPointsViewerOpengl::SolAR3DPointsViewerOpengl():ConfigurableBase(xpcf::to
     declareProperty("width", m_width);
     declareProperty("height", m_height);
     declarePropertySequence("backgroundColor", m_backgroundColor);
+	declareProperty("pointsColorFromClassLabel", m_pointsColorFromClassLabel);
+	declareProperty("classLabelColorMapPath", m_classLabelColorMapPath);
     declareProperty("fixedPointsColor", m_fixedPointsColor);
     declarePropertySequence("pointsColor", m_pointsColor);
     declarePropertySequence("points2Color", m_points2Color);
@@ -83,6 +85,23 @@ xpcf::XPCFErrorCode SolAR3DPointsViewerOpengl::onConfigured()
 
     m_resolutionX = m_width;
     m_resolutionY = m_height;
+	
+	if (m_pointsColorFromClassLabel>0 && !m_classLabelColorMapPath.empty()) {
+		std::ifstream colorFptr;
+		colorFptr.open(m_classLabelColorMapPath);
+		if (!colorFptr.is_open()) {
+			LOG_ERROR("failed to open color map file");
+			return xpcf::XPCFErrorCode::_ERROR_ACCESS_DENIED;
+		}
+		std::string line;
+		while (std::getline(colorFptr, line)) {
+			std::istringstream iss(line);
+			float r, g, b;
+			iss >> r >> g >> b;
+			m_colorMap.emplace_back(r, g, b);
+		}
+		colorFptr.close();
+	}
 
     glutInitWindowSize(m_width, m_height);
     m_glWindowID = glutCreateWindow(m_title.c_str());
@@ -310,10 +329,19 @@ void SolAR3DPointsViewerOpengl::OnRender()
 		glPointSize(m_pointSize);
 		glBegin(GL_POINTS);
 		for (unsigned int i = 0; i < m_points2.size(); ++i) {
-			if (m_fixedPointsColor)
-				glColor3f(m_points2Color[0], m_points2Color[1], m_points2Color[2]);
-			else
-				glColor3f(m_points2[i]->getR(), m_points2[i]->getG(), m_points2[i]->getB());
+			if (m_pointsColorFromClassLabel>0 && !m_colorMap.empty()) { 
+				if (m_points2[i]->getSemanticId() >= static_cast<int>(m_colorMap.size())) {
+					LOG_ERROR("Cloud point's semantic id exceeds the number of colors");
+					return;
+				}
+				glColor3f(m_colorMap[m_points2[i]->getSemanticId()][0], m_colorMap[m_points2[i]->getSemanticId()][1], m_colorMap[m_points2[i]->getSemanticId()][2]);
+			}
+			else {
+				if (m_fixedPointsColor)
+					glColor3f(m_points2Color[0], m_points2Color[1], m_points2Color[2]);
+				else
+					glColor3f(m_points2[i]->getR(), m_points2[i]->getG(), m_points2[i]->getB());
+			}
 
 			glVertex3f(m_points2[i]->getX(), -m_points2[i]->getY(), -m_points2[i]->getZ());
 		}
@@ -328,11 +356,19 @@ void SolAR3DPointsViewerOpengl::OnRender()
         glPointSize(m_pointSize);
         glBegin(GL_POINTS);
         for (unsigned int i = 0; i < m_points.size(); ++i) {
-         if (m_fixedPointsColor)
-            glColor3f(m_pointsColor[0], m_pointsColor[1], m_pointsColor[2]);
-         else
-             glColor3f(m_points[i]->getR(), m_points[i]->getG(), m_points[i]->getB());
-
+			if (m_pointsColorFromClassLabel > 0 && !m_colorMap.empty()) {
+				if (m_points[i]->getSemanticId() >= static_cast<int>(m_colorMap.size())) {
+					LOG_ERROR("Cloud point's semantic id exceeds the number of colors");
+					return;
+				}
+				glColor3f(m_colorMap[m_points[i]->getSemanticId()][0], m_colorMap[m_points[i]->getSemanticId()][1], m_colorMap[m_points[i]->getSemanticId()][2]);
+			}
+			else {
+				if (m_fixedPointsColor)
+					glColor3f(m_pointsColor[0], m_pointsColor[1], m_pointsColor[2]);
+				else
+					glColor3f(m_points[i]->getR(), m_points[i]->getG(), m_points[i]->getB());
+			}
          glVertex3f(m_points[i]->getX(), -m_points[i]->getY(), -m_points[i]->getZ());
         }
         glEnd();
