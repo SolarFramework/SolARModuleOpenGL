@@ -331,19 +331,20 @@ void SolAR3DPointsViewerOpengl::OnRender()
 		for (unsigned int i = 0; i < m_points2.size(); ++i) {
 			if (m_pointsColorFromClassLabel>0 && !m_colorMap.empty()) { 
 				if (m_points2[i]->getSemanticId() < 0) { // no semantic id associated
-					glColor3f(255.f, 255.f, 255.f); // show in white color 
+					glColor3f(1.f, 1.f, 1.f); // show in white color 
 				}
 				else if (m_points2[i]->getSemanticId() >= static_cast<int>(m_colorMap.size())) {
 					LOG_ERROR("Cloud point's semantic id exceeds the number of colors");
 					return;
 				}
 				else {
-					glColor3f(m_colorMap[m_points2[i]->getSemanticId()][0], m_colorMap[m_points2[i]->getSemanticId()][1], m_colorMap[m_points2[i]->getSemanticId()][2]);
+					auto color = m_colorMap[m_points2[i]->getSemanticId()];
+					glColor3f(color[0]/255.f, color[1]/255.f, color[2]/255.f);
 				}
 			}
 			else {
 				if (m_fixedPointsColor)
-					glColor3f(m_points2Color[0], m_points2Color[1], m_points2Color[2]);
+					glColor3f(m_points2Color[0]/255.f, m_points2Color[1]/255.f, m_points2Color[2]/255.f);
 				else
 					glColor3f(m_points2[i]->getR(), m_points2[i]->getG(), m_points2[i]->getB());
 			}
@@ -363,19 +364,20 @@ void SolAR3DPointsViewerOpengl::OnRender()
         for (unsigned int i = 0; i < m_points.size(); ++i) {
 			if (m_pointsColorFromClassLabel > 0 && !m_colorMap.empty()) {
 				if (m_points[i]->getSemanticId() < 0) { // no semantic id associated
-					glColor3f(255.f, 255.f, 255.f); // show in white color 
+					glColor3f(1.f, 1.f, 1.f); // show in white color 
 				}
 				else if (m_points[i]->getSemanticId() >= static_cast<int>(m_colorMap.size())) {
 					LOG_ERROR("Cloud point's semantic id exceeds the number of colors");
 					return;
 				}
 				else {
-					glColor3f(m_colorMap[m_points[i]->getSemanticId()][0], m_colorMap[m_points[i]->getSemanticId()][1], m_colorMap[m_points[i]->getSemanticId()][2]);
+					auto color = m_colorMap[m_points[i]->getSemanticId()];
+					glColor3f(color[0]/255.f, color[1]/255.f, color[2]/255.f);
 				}	
 			}
 			else {
 				if (m_fixedPointsColor)
-					glColor3f(m_pointsColor[0], m_pointsColor[1], m_pointsColor[2]);
+					glColor3f(m_pointsColor[0]/255.f, m_pointsColor[1]/255.f, m_pointsColor[2]/255.f);
 				else
 					glColor3f(m_points[i]->getR(), m_points[i]->getG(), m_points[i]->getB());
 			}
