@@ -144,6 +144,7 @@ FrameworkReturnCode SolAR3DPointsViewerOpengl::display (const std::vector<SRef<C
     {
         m_glcamera.clear(0.0, 0.0, 0.0, 1.0);
         glutDestroyWindow(m_glWindowID);
+        glutMainLoopEvent();
         return FrameworkReturnCode::_STOP;
     }
 
