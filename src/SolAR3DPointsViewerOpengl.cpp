@@ -101,6 +101,10 @@ xpcf::XPCFErrorCode SolAR3DPointsViewerOpengl::onConfigured()
             m_colorMap.emplace_back(r, g, b);
         }
         colorFptr.close();
+        if (m_colorMap.empty()) {
+            LOG_ERROR("empty color map for point cloud display");
+            return xpcf::XPCFErrorCode::_FAIL;
+        }
     }
 
     glutInitWindowSize(m_width, m_height);
@@ -329,7 +333,9 @@ void SolAR3DPointsViewerOpengl::OnRender()
 		glPointSize(m_pointSize);
 		glBegin(GL_POINTS);
 		for (unsigned int i = 0; i < m_points2.size(); ++i) {
-                    if (m_pointsColorFromClassLabel>0 && !m_colorMap.empty()) { 
+                    // if color map is provided, display point cloud according to class colors
+                    // if cloud point does not have semantic id, display it in white color 
+                    if (m_pointsColorFromClassLabel>0) {
                         if (m_points2[i]->getSemanticId() < 0) { // no semantic id associated
                             glColor3f(1.f, 1.f, 1.f); // show in white color 
                         }
@@ -342,7 +348,7 @@ void SolAR3DPointsViewerOpengl::OnRender()
                             glColor3f(color[0]/255.f, color[1]/255.f, color[2]/255.f);
                         }
                     }
-                    else {
+                    else { // no color map is provided
                         if (m_fixedPointsColor)
                             glColor3f(m_points2Color[0]/255.f, m_points2Color[1]/255.f, m_points2Color[2]/255.f);
                         else
@@ -362,7 +368,9 @@ void SolAR3DPointsViewerOpengl::OnRender()
         glPointSize(m_pointSize);
         glBegin(GL_POINTS);
         for (unsigned int i = 0; i < m_points.size(); ++i) {
-            if (m_pointsColorFromClassLabel > 0 && !m_colorMap.empty()) {
+            // if color map is provided, display point cloud according to class colors
+            // if cloud point does not have semantic id, display it in white color
+            if (m_pointsColorFromClassLabel > 0) {
                 if (m_points[i]->getSemanticId() < 0) { // no semantic id associated
                     glColor3f(1.f, 1.f, 1.f); // show in white color 
                 }
@@ -375,7 +383,7 @@ void SolAR3DPointsViewerOpengl::OnRender()
                     glColor3f(color[0]/255.f, color[1]/255.f, color[2]/255.f);
                 }	
             }
-            else {
+            else { // no color map is provided 
                 if (m_fixedPointsColor)
                     glColor3f(m_pointsColor[0]/255.f, m_pointsColor[1]/255.f, m_pointsColor[2]/255.f);
                 else
