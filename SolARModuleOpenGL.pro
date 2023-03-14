@@ -27,7 +27,7 @@ CONFIG(release,debug|release) {
     DEFINES += NDEBUG=1
 }
 
-DEPENDENCIESCONFIG = shared install_recurse
+DEPENDENCIESCONFIG = static install_recurse
 
 ## Configuration for Visual Studio to install binaries and dependencies. Work also for QT Creator by replacing QMAKE_INSTALL
 PROJECTCONFIG = QTVS
@@ -74,6 +74,7 @@ win32 {
     QMAKE_CXXFLAGS += -wd4250 -wd4251 -wd4244 -wd4275
     QMAKE_CXXFLAGS_RELEASE += /O2
     QMAKE_CXXFLAGS_DEBUG += /Od
+    LIBS += -ladvapi32 -lcomdlg32
 }
 
 header_files.path = $${PROJECTDEPLOYDIR}/interfaces

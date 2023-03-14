@@ -11,10 +11,11 @@
 #include "vector.hpp"
 #include "matrix.hpp"
 #include "rigid_motion.hpp"
-#ifdef __APPLE__
-#include "GL/freeglut.h"
-#else
+
+#ifdef __unix__
 #include "freeglut.h"
+#else
+#include "GL/freeglut.h"
 #endif
 
 namespace Mouse {

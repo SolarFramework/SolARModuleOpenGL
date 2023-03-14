@@ -22,11 +22,12 @@
 
 #include "datastructure/Image.h"
 
-#ifdef __APPLE__
-#include "GL/freeglut.h"
-#else
+#ifdef __unix__
 #include "freeglut.h"
+#else
+#include "GL/freeglut.h"
 #endif
+
 #include <mutex>
 
 namespace SolAR {
