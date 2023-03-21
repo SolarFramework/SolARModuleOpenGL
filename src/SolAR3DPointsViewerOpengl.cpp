@@ -63,6 +63,13 @@ SolAR3DPointsViewerOpengl::SolAR3DPointsViewerOpengl():ConfigurableBase(xpcf::to
     declareProperty("cameraScale", m_cameraScale);
     declareProperty("zoomSensitivity", m_zoomSensitivity);
     declareProperty("exitKey", m_exitKey);
+    declareProperty("increaseRotationXKey", m_increaseRotationXKey);
+    declareProperty("decreaseRotationXKey", m_decreaseRotationXKey);
+    declareProperty("increaseRotationYKey", m_increaseRotationYKey);
+    declareProperty("decreaseRotationYKey", m_decreaseRotationYKey);
+    declareProperty("increaseRotationZKey", m_increaseRotationZKey);
+    declareProperty("decreaseRotationZKey", m_decreaseRotationZKey);
+    declareProperty("rotationStep", m_rotationStep);
     m_instance = this ;
 	LOG_DEBUG(" SolAR3DPointsViewerOpengl constructor");
 }
@@ -269,6 +276,32 @@ void drawAxis(Transform3Df& pose, float scale, float lineWidth){
     glLineWidth(1.0f);
 }
 
+void SolAR3DPointsViewerOpengl::rotate(const float rx, const float ry, const float rz)
+{
+    if (rx != 0.0) {
+        math_matrix_3x3f rotMatrixX = {1.0, 0.0, 0.0,
+                                       0.0, cos(rx), -sin(rx),
+                                       0.0, sin(rx), cos(rx)};
+
+        m_glcamera.rotate(rotMatrixX);
+    }
+
+    if (ry != 0.0) {
+        math_matrix_3x3f rotMatrixY = {cos(ry), 0.0, sin(ry),
+                                       0.0, 1.0, 0.0,
+                                       -sin(ry), 0.0, cos(ry)};
+
+        m_glcamera.rotate(rotMatrixY);
+    }
+
+    if (rz != 0.0) {
+        math_matrix_3x3f rotMatrixZ = {cos(rz), -sin(rz), 0.0,
+                                       sin(rz), cos(rz), 0.0,
+                                       0.0, 0.0, 1.0};
+
+        m_glcamera.rotate(rotMatrixZ);
+    }
+}
 
 
 void SolAR3DPointsViewerOpengl::OnMainLoop()
@@ -280,6 +313,8 @@ void SolAR3DPointsViewerOpengl::OnRender()
 {
     glEnable(GL_NORMALIZE);
     glEnable(GL_DEPTH_TEST);
+
+    rotate(m_rotationX, m_rotationY, m_rotationZ);
 
     m_glcamera.set_viewport(0, 0, m_resolutionX, m_resolutionY);
     m_glcamera.setup();
@@ -404,8 +439,20 @@ void SolAR3DPointsViewerOpengl::OnResizeWindow(int _w, int _h)
 
 void SolAR3DPointsViewerOpengl::OnKeyBoard(unsigned char key, ATTRIBUTE(maybe_unused) int x, ATTRIBUTE(maybe_unused) int y)
 {
-   if (key == m_exitKey)
-       m_exitKeyPressed = true;
+    if (key == m_exitKey)
+        m_exitKeyPressed = true;
+    else if (key == m_increaseRotationXKey)
+        m_rotationX -= m_rotationStep;
+    else if (key == m_decreaseRotationXKey)
+        m_rotationX += m_rotationStep;
+    else if (key == m_increaseRotationYKey)
+        m_rotationY += m_rotationStep;
+    else if (key == m_decreaseRotationYKey)
+        m_rotationY -= m_rotationStep;
+    else if (key == m_increaseRotationZKey)
+        m_rotationZ -= m_rotationStep;
+    else if (key == m_decreaseRotationZKey)
+        m_rotationZ += m_rotationStep;
 }
 
 
