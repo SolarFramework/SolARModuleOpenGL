@@ -230,6 +230,9 @@ private:
     /// @brief The key code to press to decrease rotation about Z axis. If negative, no key is defined.
     int m_decreaseRotationZKey = -1;
 
+    /// @brief The key code to press to reset all rotation values to 0. If negative, no key is defined.
+    int m_resetRotationKey = -1;
+
     int m_glWindowID = -1;
     std::vector<SRef<datastructure::CloudPoint>> m_points;
     std::vector<SRef<datastructure::CloudPoint>> m_points2;

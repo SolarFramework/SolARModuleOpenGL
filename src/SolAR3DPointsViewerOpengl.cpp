@@ -69,8 +69,10 @@ SolAR3DPointsViewerOpengl::SolAR3DPointsViewerOpengl():ConfigurableBase(xpcf::to
     declareProperty("decreaseRotationYKey", m_decreaseRotationYKey);
     declareProperty("increaseRotationZKey", m_increaseRotationZKey);
     declareProperty("decreaseRotationZKey", m_decreaseRotationZKey);
+    declareProperty("resetRotationKey", m_resetRotationKey);
     declareProperty("rotationStep", m_rotationStep);
     m_instance = this ;
+
 	LOG_DEBUG(" SolAR3DPointsViewerOpengl constructor");
 }
 
@@ -100,6 +102,46 @@ xpcf::XPCFErrorCode SolAR3DPointsViewerOpengl::onConfigured()
     glutReshapeFunc(ResizeWindow);
     glutIdleFunc(MainLoop);
     glutMainLoopEvent();
+
+    LOG_INFO("**************************************************");
+    LOG_INFO("Keys defined for view rotation:");
+    if (m_increaseRotationXKey != -1) {
+        LOG_INFO("Key defined to increase rotation around X axis: {}", (char)m_increaseRotationXKey);
+    }
+    else
+        LOG_INFO("No key defined to increase rotation around X axis");
+    if (m_decreaseRotationXKey != -1) {
+        LOG_INFO("Key defined to decrease rotation around X axis: {}", (char)m_decreaseRotationXKey);
+    }
+    else
+        LOG_INFO("No key defined to decrease rotation around X axis");
+    if (m_increaseRotationYKey != -1) {
+        LOG_INFO("Key defined to increase rotation around Y axis: {}", (char)m_increaseRotationYKey);
+    }
+    else
+        LOG_INFO("No key defined to increase rotation around Y axis");
+    if (m_decreaseRotationYKey != -1) {
+        LOG_INFO("Key defined to decrease rotation around Y axis: {}", (char)m_decreaseRotationYKey);
+    }
+    else
+        LOG_INFO("No key defined to decrease rotation around Y axis");
+    if (m_increaseRotationZKey != -1) {
+        LOG_INFO("Key defined to increase rotation around Z axis: {}", (char)m_increaseRotationZKey);
+    }
+    else
+        LOG_INFO("No key defined to increase rotation around Z axis");
+    if (m_decreaseRotationZKey != -1) {
+        LOG_INFO("Key defined to decrease rotation around Z axis: {}", (char)m_decreaseRotationZKey);
+    }
+    else
+        LOG_INFO("No key defined to decrease rotation around Z axis");
+    if (m_resetRotationKey != -1) {
+        LOG_INFO("Key defined to reset rotation around all axes:  {}", (char)m_resetRotationKey);
+    }
+    else
+        LOG_INFO("No key defined to reset rotation around all axis");
+    LOG_INFO("**************************************************");
+
     return xpcf::XPCFErrorCode::_SUCCESS;
 }
 
@@ -453,6 +495,11 @@ void SolAR3DPointsViewerOpengl::OnKeyBoard(unsigned char key, ATTRIBUTE(maybe_un
         m_rotationZ -= m_rotationStep;
     else if (key == m_decreaseRotationZKey)
         m_rotationZ += m_rotationStep;
+    else if (key == m_resetRotationKey) {
+        m_rotationX = 0.0;
+        m_rotationY = 0.0;
+        m_rotationZ = 0.0;
+    }
 }
 
 
