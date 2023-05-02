@@ -180,7 +180,7 @@ private:
     std::string m_classLabelColorMapPath = "";
 
     /// @brief colormap mapping class label to RGB triples
-    std::vector<Vector3f> m_colorMap;
+    std::vector<datastructure::Vector3f> m_colorMap;
 
     /// @brief camera color
     std::vector<unsigned int> m_cameraColor = {0,0,255};
