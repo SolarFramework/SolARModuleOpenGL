@@ -47,7 +47,7 @@ SolAR3DPointsViewerOpengl::SolAR3DPointsViewerOpengl():ConfigurableBase(xpcf::to
     declareProperty("width", m_width);
     declareProperty("height", m_height);
     declarePropertySequence("backgroundColor", m_backgroundColor);
-    declareProperty("pointsColorFromClassLabel", m_pointsColorFromClassLabel);
+    declareProperty("pointsColorFromClassLabel", m_usePointsColorFromClassLabel);
     declareProperty("classLabelColorMapPath", m_classLabelColorMapPath);
     declareProperty("fixedPointsColor", m_fixedPointsColor);
     declarePropertySequence("pointsColor", m_pointsColor);
@@ -86,11 +86,15 @@ xpcf::XPCFErrorCode SolAR3DPointsViewerOpengl::onConfigured()
     m_resolutionX = m_width;
     m_resolutionY = m_height;
 
-    if (m_pointsColorFromClassLabel>0 && !m_classLabelColorMapPath.empty()) {
+    if (m_usePointsColorFromClassLabel>0) {
+        if (m_classLabelColorMapPath.empty()) {
+            LOG_ERROR("property classLabelColorMapPath is not defined and is needed when pointsColorFromClassLabel is > 0");
+            return xpcf::XPCFErrorCode::_FAIL;
+        }
         std::ifstream colorFptr;
         colorFptr.open(m_classLabelColorMapPath);
         if (!colorFptr.is_open()) {
-            LOG_ERROR("failed to open color map file");
+            LOG_ERROR("failed to open color map file from path {}", m_classLabelColorMapPath);
             return xpcf::XPCFErrorCode::_ERROR_ACCESS_DENIED;
         }
         std::string line;
@@ -336,12 +340,12 @@ void SolAR3DPointsViewerOpengl::OnRender()
 		for (unsigned int i = 0; i < m_points2.size(); ++i) {
                     // if color map is provided, display point cloud according to class colors
                     // if cloud point does not have semantic id, display it in white color 
-                    if (m_pointsColorFromClassLabel>0) {
+                    if (m_usePointsColorFromClassLabel>0) {
                         if (m_points2[i]->getSemanticId() < 0) { // no semantic id associated
                             glColor3f(1.f, 1.f, 1.f); // show in white color 
                         }
                         else if (m_points2[i]->getSemanticId() >= static_cast<int>(m_colorMap.size())) {
-                            LOG_ERROR("Cloud point's semantic id exceeds the number of colors");
+                            LOG_ERROR("Cloud point's semantic id {} exceeds the number of colors {}", m_points2[i]->getSemanticId(), m_colorMap.size());
                             return;
                         }
                         else {
@@ -371,12 +375,12 @@ void SolAR3DPointsViewerOpengl::OnRender()
         for (unsigned int i = 0; i < m_points.size(); ++i) {
             // if color map is provided, display point cloud according to class colors
             // if cloud point does not have semantic id, display it in white color
-            if (m_pointsColorFromClassLabel > 0) {
+            if (m_usePointsColorFromClassLabel > 0) {
                 if (m_points[i]->getSemanticId() < 0) { // no semantic id associated
                     glColor3f(1.f, 1.f, 1.f); // show in white color 
                 }
                 else if (m_points[i]->getSemanticId() >= static_cast<int>(m_colorMap.size())) {
-                    LOG_ERROR("Cloud point's semantic id exceeds the number of colors");
+                    LOG_ERROR("Cloud point's semantic id {} exceeds the number of colors {}", m_points[i]->getSemanticId(), m_colorMap.size());
                     return;
                 }
                 else {

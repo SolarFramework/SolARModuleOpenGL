@@ -174,7 +174,7 @@ private:
     std::vector<unsigned int> m_points2Color = {255, 0, 0};
 
     /// @brief display points color according to class label 
-    unsigned int m_pointsColorFromClassLabel = 0;
+    unsigned int m_usePointsColorFromClassLabel = 0;
 
     /// @brief colormap file mapping class label to RGB color 
     std::string m_classLabelColorMapPath = "";
