@@ -32,7 +32,7 @@ namespace MODULES {
 namespace OPENGL {
 
 static Transform3Df SolAR2GL = [] {
-  Matrix<float, 4, 4> matrix;
+  Eigen::Matrix<float, 4, 4> matrix;
   matrix << 1.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 1.0;
   return Transform3Df(matrix);
 }();
@@ -47,6 +47,8 @@ SolAR3DPointsViewerOpengl::SolAR3DPointsViewerOpengl():ConfigurableBase(xpcf::to
     declareProperty("width", m_width);
     declareProperty("height", m_height);
     declarePropertySequence("backgroundColor", m_backgroundColor);
+    declareProperty("pointsColorFromClassLabel", m_usePointsColorFromClassLabel);
+    declareProperty("classLabelColorMapPath", m_classLabelColorMapPath);
     declareProperty("fixedPointsColor", m_fixedPointsColor);
     declarePropertySequence("pointsColor", m_pointsColor);
     declarePropertySequence("points2Color", m_points2Color);
@@ -92,6 +94,31 @@ xpcf::XPCFErrorCode SolAR3DPointsViewerOpengl::onConfigured()
 
     m_resolutionX = m_width;
     m_resolutionY = m_height;
+
+    if (m_usePointsColorFromClassLabel>0) {
+        if (m_classLabelColorMapPath.empty()) {
+            LOG_ERROR("property classLabelColorMapPath is not defined and is needed when pointsColorFromClassLabel is > 0");
+            return xpcf::XPCFErrorCode::_FAIL;
+        }
+        std::ifstream colorFptr;
+        colorFptr.open(m_classLabelColorMapPath);
+        if (!colorFptr.is_open()) {
+            LOG_ERROR("failed to open color map file from path {}", m_classLabelColorMapPath);
+            return xpcf::XPCFErrorCode::_ERROR_ACCESS_DENIED;
+        }
+        std::string line;
+        while (std::getline(colorFptr, line)) {
+            std::istringstream iss(line);
+            float r, g, b;
+            iss >> r >> g >> b;
+            m_colorMap.emplace_back(r, g, b);
+        }
+        colorFptr.close();
+        if (m_colorMap.empty()) {
+            LOG_ERROR("empty color map for point cloud display");
+            return xpcf::XPCFErrorCode::_FAIL;
+        }
+    }
 
     glutInitWindowSize(m_width, m_height);
     m_glWindowID = glutCreateWindow(m_title.c_str());
@@ -381,20 +408,42 @@ void SolAR3DPointsViewerOpengl::OnRender()
         drawAxis(sceneTransform, m_sceneSize * 0.1 * m_axisScale, m_axisScale);
     }
 
+    auto fnAssignColor = [](const std::vector<SRef<datastructure::CloudPoint>>& points, const unsigned int& usePtsColorFromClassLabel, 
+    const std::vector<datastructure::Vector3f>& colorMap, const unsigned int& fixPtsColor, const std::vector<unsigned int>& ptsColor) {
+        for (unsigned int i = 0; i < points.size(); ++i) {
+            // if color map is provided, display point cloud according to class colors
+            // if cloud point does not have semantic id, display it in white color 
+            if (usePtsColorFromClassLabel>0) {
+                if (points[i]->getSemanticId() < 0) { // no semantic id associated
+                    glColor3f(1.f, 1.f, 1.f); // show in white color 
+                }
+                else if (points[i]->getSemanticId() >= static_cast<int>(colorMap.size())) {
+                    LOG_ERROR("Cloud point's semantic id {} exceeds the number of colors {}", points[i]->getSemanticId(), colorMap.size());
+                    return;
+                }
+                else {
+                    auto color = colorMap[points[i]->getSemanticId()];
+                    glColor3f(color[0]/255.f, color[1]/255.f, color[2]/255.f);
+                }
+            }
+            else { // no color map is provided
+                if (fixPtsColor)
+                    glColor3f(ptsColor[0]/255.f, ptsColor[1]/255.f, ptsColor[2]/255.f);
+                else
+                    glColor3f(points[i]->getR(), points[i]->getG(), points[i]->getB());
+            }
+
+            glVertex3f(points[i]->getX(), -points[i]->getY(), -points[i]->getZ());
+        }
+    };
+
 	if (!m_points2.empty())
 	{
 		glPushMatrix();
 		glEnable(GL_POINT_SMOOTH);
 		glPointSize(m_pointSize);
 		glBegin(GL_POINTS);
-		for (unsigned int i = 0; i < m_points2.size(); ++i) {
-			if (m_fixedPointsColor)
-				glColor3f(m_points2Color[0], m_points2Color[1], m_points2Color[2]);
-			else
-				glColor3f(m_points2[i]->getR(), m_points2[i]->getG(), m_points2[i]->getB());
-
-			glVertex3f(m_points2[i]->getX(), -m_points2[i]->getY(), -m_points2[i]->getZ());
-		}
+        fnAssignColor(m_points2, m_usePointsColorFromClassLabel, m_colorMap, m_fixedPointsColor, m_points2Color);
 		glEnd();
 		glPopMatrix();
 	}
@@ -405,14 +454,7 @@ void SolAR3DPointsViewerOpengl::OnRender()
         glEnable (GL_POINT_SMOOTH);
         glPointSize(m_pointSize);
         glBegin(GL_POINTS);
-        for (unsigned int i = 0; i < m_points.size(); ++i) {
-         if (m_fixedPointsColor)
-            glColor3f(m_pointsColor[0], m_pointsColor[1], m_pointsColor[2]);
-         else
-             glColor3f(m_points[i]->getR(), m_points[i]->getG(), m_points[i]->getB());
-
-         glVertex3f(m_points[i]->getX(), -m_points[i]->getY(), -m_points[i]->getZ());
-        }
+        fnAssignColor(m_points, m_usePointsColorFromClassLabel, m_colorMap, m_fixedPointsColor, m_pointsColor);
         glEnd();
         glPopMatrix();
     }    
