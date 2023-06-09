@@ -49,7 +49,7 @@ unix {
     QMAKE_POST_LINK += "make install install_deps"
 }
 
-unix:!android {
+unix {
     QMAKE_CXXFLAGS += -Wignored-qualifiers
 }
 
