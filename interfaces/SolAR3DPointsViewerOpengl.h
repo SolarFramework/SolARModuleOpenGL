@@ -173,6 +173,15 @@ private:
     /// @brief points color for the second cloud
     std::vector<unsigned int> m_points2Color = {255, 0, 0};
 
+    /// @brief display points color according to class label 
+    unsigned int m_usePointsColorFromClassLabel = 0;
+
+    /// @brief colormap file mapping class label to RGB color 
+    std::string m_classLabelColorMapPath = "";
+
+    /// @brief colormap mapping class label to RGB triples
+    std::vector<datastructure::Vector3f> m_colorMap;
+
     /// @brief camera color
     std::vector<unsigned int> m_cameraColor = {0,0,255};
 
@@ -212,7 +221,26 @@ private:
     /// @brief The key code to press to close the window. If negative, no key is defined to close the window
     int m_exitKey = 27;
 
+    /// @brief The key code to press to increase rotation about X axis. If negative, no key is defined.
+    int m_increaseRotationXKey = -1;
 
+    /// @brief The key code to press to decrease rotation about X axis. If negative, no key is defined.
+    int m_decreaseRotationXKey = -1;
+
+    /// @brief The key code to press to increase rotation about Y axis. If negative, no key is defined.
+    int m_increaseRotationYKey = -1;
+
+    /// @brief The key code to press to decrease rotation about Y axis. If negative, no key is defined.
+    int m_decreaseRotationYKey = -1;
+
+    /// @brief The key code to press to increase rotation about Z axis. If negative, no key is defined.
+    int m_increaseRotationZKey = -1;
+
+    /// @brief The key code to press to decrease rotation about Z axis. If negative, no key is defined.
+    int m_decreaseRotationZKey = -1;
+
+    /// @brief The key code to press to reset all rotation values to 0. If negative, no key is defined.
+    int m_resetRotationKey = -1;
 
     int m_glWindowID = -1;
     std::vector<SRef<datastructure::CloudPoint>> m_points;
@@ -228,6 +256,10 @@ private:
     unsigned int m_resolutionY;
     bool m_exitKeyPressed = false;
     bool m_firstDisplay = true;
+    float m_rotationStep = 0.01;
+    float m_rotationX = 0.0, m_rotationY = 0.0, m_rotationZ = 0.0;
+
+    void rotate(const float rx, const float ry, const float rz);
 
     void OnMainLoop() ;
     void OnRender() ;

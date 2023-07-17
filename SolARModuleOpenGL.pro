@@ -9,7 +9,7 @@ INSTALLSUBDIR = SolARBuild
 TARGET = SolARModuleOpenGL
 
 FRAMEWORK = $$TARGET
-VERSION=0.11.0
+VERSION=1.0.0
 
 DEFINES += MYVERSION=$${VERSION}
 DEFINES += TEMPLATE_LIBRARY
@@ -49,22 +49,13 @@ unix {
     QMAKE_POST_LINK += "make install install_deps"
 }
 
-unix:!android {
+unix {
     QMAKE_CXXFLAGS += -Wignored-qualifiers
 }
 
 linux {
     QMAKE_LFLAGS += -ldl
     LIBS += -L/home/linuxbrew/.linuxbrew/lib # temporary fix caused by grpc with -lre2 ... without -L in grpc.pc
-}
-
-macx {
-    DEFINES += _MACOS_TARGET_
-    QMAKE_MAC_SDK= macosx
-    QMAKE_CFLAGS += -mmacosx-version-min=10.7 -std=c11 #-x objective-c++
-    QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=c11 -std=c++11 -O3 -fPIC#-x objective-c++
-    QMAKE_LFLAGS += -mmacosx-version-min=10.7 -v -lstdc++
-    LIBS += -lstdc++ -lc -lpthread
 }
 
 win32 {
@@ -88,7 +79,6 @@ INSTALLS += xpcf_xml_files
 OTHER_FILES += \
     packagedependencies.txt \
     packagedependencies-linux.txt \
-    packagedependencies-mac.txt \
     packagedependencies-win.txt
 
 #NOTE : Must be placed at the end of the .pro
