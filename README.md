@@ -1,3 +1,7 @@
+# DEPRECATED - This repo is no longer maintained
+
+----
+
 # SolARModuleOpenGL
 
 The **SolARModuleOpenGL** module is based on [OpenGL](https://www.opengl.org/) (Open Graphics Library) which is a cross-language, cross-platform application programming interface (API) for rendering 2D and 3D vector graphics. The API is typically used to interact with a graphics processing unit (GPU), to achieve hardware-accelerated rendering.
